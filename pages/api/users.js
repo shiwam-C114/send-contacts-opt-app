@@ -1,5 +1,8 @@
-// getting data from Users.json and seding it in json fromat
-import { data } from "../../public/Users.json";
+// getting data from glitch server and sending it in json fromat
 export default function handler(req, res) {
-  res.status(200).json( data )
+  fetch("https://whimsical-brazen-carnation.glitch.me/data")
+    .then(res => res.json())
+    .then(data => {
+      res.status(200).json(data)
+    })
 }

@@ -12,22 +12,26 @@ const vonage = new Vonage({
 // function to write message logs to the Msglogs.json file
 function WriteToMsgLog(OTP, name, status) {
 
-    // getting the path to Msglogs file
-    let curPath = path.resolve("./") + '/public/Msglogs.json'
+        // reading data first to get the prev state
+    fetch('https://whimsical-brazen-carnation.glitch.me/msglog')
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
 
-    // reading data first to get the prev state
-    fs.readFile(path.resolve(curPath), (err, data) => {
-        data = JSON.parse(data)
-
-        // reversing twice to order msg the latest to the top 
-        data.msglog.reverse()
-        data.msglog.push({ msg: OTP, name: name, timestamp: Date(), status: status })
-        data.msglog.reverse()
-        data = JSON.stringify(data)
-        fs.writeFile(curPath, data, 'utf-8', (err) => {
-            console.log(err)
+            // reversing twice to order msg the latest to the top 
+            data.reverse()
+            data.push({ msg: OTP, name: name, timestamp: Date(), status: status })
+            data.reverse()
+            console.log(data,"new"); 
+            fetch('https://whimsical-brazen-carnation.glitch.me/msglog', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({data:data})
+            }).then(res=>res)
+            .then(data=>console.log(data), "new data")
         })
-    })
 }
 
 // function to handle request and response from the frontend
@@ -43,7 +47,7 @@ export default function handler(req, res) {
         vonage.message.sendSms(from, to, text, (err, responseData) => {
             if (err) {
                 console.log(err);
-                res.status(500).send({ msg:"internal server error" })
+                res.status(500).send({ msg: "internal server error" })
             } else {
                 if (responseData.messages[0]['status'] === "0") {
                     console.log("Message sent successfully.");
@@ -53,7 +57,7 @@ export default function handler(req, res) {
                     res.json({ msg: "Message sent successfully." })
                 } else {
                     console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                    
+
                     // writing data to msg logger in case of message failed.
                     WriteToMsgLog(OTP, name, "failed")
                     res.json({ msg: responseData.messages[0] })
