@@ -27,7 +27,7 @@ function WriteToMsgLog(OTP, name, status) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({data})
+                body: JSON.stringify(data)
             }).then(res=>res)
             .then(data=>console.log(data), "new data")
         })
