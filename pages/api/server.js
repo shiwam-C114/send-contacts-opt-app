@@ -22,13 +22,12 @@ function WriteToMsgLog(OTP, name, status) {
             data.reverse()
             data.push({ msg: OTP, name: name, timestamp: Date(), status: status })
             data.reverse()
-            console.log(data,"new"); 
             fetch('https://whimsical-brazen-carnation.glitch.me/msglog', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({data:data})
+                body: JSON.stringify({data})
             }).then(res=>res)
             .then(data=>console.log(data), "new data")
         })
