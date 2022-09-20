@@ -19,7 +19,7 @@ export default function Home() {
   function getMsgLogs() {
     fetch(`${process.env.NEXT_PUBLIC_BASE}/api/msglog`)
       .then(res => res.json())
-      .then(data => setMsgLogs(data))
+      .then(data => setMsgLogs(data.reverse()))
   }
 
   // function to send porps to the next page
@@ -52,7 +52,7 @@ export default function Home() {
         <Nav>
           <Center margin={20}>
             <Flex gap={40}>
-              
+
               {/* first menu showing contact list */}
               <Menu >
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>

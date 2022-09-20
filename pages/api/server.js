@@ -11,26 +11,14 @@ const vonage = new Vonage({
 
 // function to write message logs to the Msglogs.json file
 function WriteToMsgLog(OTP, name, status) {
-
-        // reading data first to get the prev state
-    fetch('https://whimsical-brazen-carnation.glitch.me/msglog')
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
-
-            // reversing twice to order msg the latest to the top 
-            data.reverse()
-            data.push({ msg: OTP, name: name, timestamp: Date(), status: status })
-            data.reverse()
-            fetch('https://whimsical-brazen-carnation.glitch.me/msglog', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(res=>res)
-            .then(data=>console.log(data), "new data")
-        })
+    fetch('https://whimsical-brazen-carnation.glitch.me/msglog', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ msg: OTP, name: name, timestamp: Date(), status: status })
+    }).then(res => res)
+    .then(data => console.log(data), "new data")
 }
 
 // function to handle request and response from the frontend
